@@ -1,0 +1,33 @@
+{
+  "name": "generator-nan-nodejs",
+  "version": "0.0.1",
+  "description": "Yeoman nodejs backend generator for NaN Labs.",
+  "license": "MIT",
+  "main": "app/index.js",
+  "repository": "fpinchentti-nan/generator-nan-basic",
+  "author": {
+    "name": "Francisco Pinchentti",
+    "email": "",
+    "url": "https://github.com/fpinchentti-nan"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "app"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "yeoman-generator": "^0.18.9",
+    "chalk": "^1.0.0",
+    "yosay": "^1.0.2"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "name": "<%= _.slugify(applicationName) %>",
+    "description": "<%= applicationDescription %>",
+    "version": "0.0.1",
+    <% if (applicationLicense) { %>"license": "<%= applicationLicense %>",<% } %>
+    "main": "<%= applicationMain %>",
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "dependencies": {
+        <%= _.map(applicationDeps, function(dep) { return '    "' + dep + '":"latest"' }).join(',\n\t') %>
+    }
+}

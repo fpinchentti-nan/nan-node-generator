@@ -1,0 +1,8 @@
+{
+    <% if (libexpress) { %>
+    "express": {
+        "port": 3000
+    },
+    <% } %>
+    "<%= whichDb %>":{}
+}
