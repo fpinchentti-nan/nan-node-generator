@@ -11,9 +11,8 @@ module.exports = yeoman.generators.Base.extend({
     prompting: function () {
         var done = this.async();
 
-        // Have Yeoman greet the user.
         this.log(yosay(
-            'Welcome to the transcendent ' + chalk.red('NanNodejs') + ' generator!'
+            'Welcome to the transcendent ' + chalk.red('NanNode') + ' generator!'
         ));
 
         var prompts = [
@@ -32,13 +31,16 @@ module.exports = yeoman.generators.Base.extend({
             type: 'input',
             name: 'applicationMain',
             default: 'app.js',
-            message: 'Enter application main file:'
+            message: 'Enter application main filename:'
         },
         {
             type: 'input',
             name: 'configurationFile',
             default: 'config.json',
-            message: 'Enter application main configuration file:'
+            message: 'Enter application main configuration (json) filename:',
+            validate: function (filename) {
+                return /.*\.json$/.test(filename);
+            }
         },
         {
             type: 'list',
@@ -62,16 +64,34 @@ module.exports = yeoman.generators.Base.extend({
             type: 'list',
             name: 'whichDb',
             message: 'Which one?',
-            choices: [ 'mysql', 'mongodb' ],
+            choices: [ 'mongodb', 'sql' ],
             when: function (answers) {
                 return answers.useDb;
+            }
+        },
+        {
+            type: 'list',
+            name: 'libmongo',
+            message: 'Which mongo library use?',
+            choices: [ 'mongojs', 'mongoose', 'promised-mongo' ],
+            when: function (answers) {
+                return answers.whichDb === 'mongodb';
+            }
+        },
+        {
+            type: 'list',
+            name: 'libsql',
+            message: 'Which sql library use?',
+            choices: [ 'mysql', 'sequelize' ],
+            when: function (answers) {
+                return answers.whichDb === 'sql';
             }
         },
         {
             type: 'checkbox',
             name: 'libsMisc',
             message: 'Which other libs you\d like to include?',
-            choices: [ 'underscore', 'lodash', 'q' ]
+            choices: [ 'commander', 'lodash', 'q', 'request', 'underscore' ]
         }
         ];
         this.prompt(prompts, function (props) {
@@ -83,7 +103,6 @@ module.exports = yeoman.generators.Base.extend({
                 this.applicationLicense = props.applicationLicense;
             }
             this.applicationMain = props.applicationMain;
-            // @todo validate config file ending in .json:
             this.configurationFile = props.configurationFile;
             // handling dependencies:
             this.libexpress = props.libexpress;
@@ -94,8 +113,17 @@ module.exports = yeoman.generators.Base.extend({
                 this.applicationDeps.push('express');
             }
             if (this.useDb) {
-                // @todo switch over genuine node db apis:
-                this.applicationDeps.push(this.whichDb);
+                if (this.libsql) {
+                    this.applicationDeps.push(this.libsql);
+                }else if (this.libmongo) {
+                    this.applicationDeps.push(this.libmongo);
+                }
+            }
+            if (props.libsMisc && props.libsMisc.indexOf('commander') !== -1) {
+                this.applicationDeps.push('commander');
+            }
+            if (props.libsMisc && props.libsMisc.indexOf('request') !== -1) {
+                this.applicationDeps.push('request');
             }
             if (props.libsMisc && props.libsMisc.indexOf('underscore') !== -1) {
                 this.applicationDeps.push('underscore');

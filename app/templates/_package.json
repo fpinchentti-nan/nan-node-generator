@@ -10,6 +10,6 @@
         "url": ""
     },
     "dependencies": {
-        <%= _.map(applicationDeps, function(dep) { return '    "' + dep + '":"latest"' }).join(',\n\t') %>
+        <%= _.map(applicationDeps, function(dep) { return '"' + dep + '":"latest"' }).join(',\n\t') %>
     }
 }
