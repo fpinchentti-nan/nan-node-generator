@@ -73,7 +73,7 @@ module.exports = yeoman.generators.Base.extend({
         {
             type: 'confirm',
             name: 'useDb',
-            message: 'Would you be using a database?',
+            message: 'Would you like to connect to a database?',
             default: true
         },
         {
@@ -130,9 +130,11 @@ module.exports = yeoman.generators.Base.extend({
                 this.applicationDeps.push('express');
             }
             if (this.useDb) {
-                if (this.libsql) {
+                if (props.whichDb === 'sql') {
+                    this.libsql = props.libsql;
                     this.applicationDeps.push(this.libsql);
-                }else if (this.libmongo) {
+                }else if (props.whichDb === 'mongodb') {
+                    this.libmongo = props.libmongo;
                     this.applicationDeps.push(this.libmongo);
                 }
             }
@@ -154,36 +156,6 @@ module.exports = yeoman.generators.Base.extend({
             // finally:
             done();
         }.bind(this));
-    },
-
-    _buildDependenciesArray: function (props) {
-        var applicationDeps = [];
-        if (this.libexpress) {
-            applicationDeps.push('express');
-        }
-        if (this.useDb) {
-            if (this.libsql) {
-                applicationDeps.push(this.libsql);
-            }else if (this.libmongo) {
-                applicationDeps.push(this.libmongo);
-            }
-        }
-        if (props.libsMisc && props.libsMisc.indexOf('commander') !== -1) {
-            applicationDeps.push('commander');
-        }
-        if (props.libsMisc && props.libsMisc.indexOf('request') !== -1) {
-            applicationDeps.push('request');
-        }
-        if (props.libsMisc && props.libsMisc.indexOf('underscore') !== -1) {
-            applicationDeps.push('underscore');
-        }
-        if (props.libsMisc && props.libsMisc.indexOf('lodash') !== -1) {
-            applicationDeps.push('lodash');
-        }
-        if (props.libsMisc && props.libsMisc.indexOf('q') !== -1) {
-            applicationDeps.push('q');
-        }
-        return applicationDeps;
     },
 
     writing: {

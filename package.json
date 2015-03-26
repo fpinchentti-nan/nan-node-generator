@@ -1,6 +1,6 @@
 {
   "name": "generator-nan-node",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Yeoman nodejs backend generator for NaN Labs.",
   "license": "MIT",
   "main": "app/index.js",
