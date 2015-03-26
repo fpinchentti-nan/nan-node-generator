@@ -2,6 +2,7 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+var _ = require('lodash');
 
 module.exports = yeoman.generators.Base.extend({
     initializing: function () {
@@ -19,25 +20,40 @@ module.exports = yeoman.generators.Base.extend({
         {
             type: 'input',
             name: 'applicationName',
-            message: 'Please enter application name',
+            message: 'Please enter application name:',
             default: this.appname
         },
         {
             type: 'input',
             name: 'applicationDescription',
-            message: 'Please enter application description'
+            message: 'Please enter application description:'
+        },
+        {
+            type: 'input',
+            name: 'authorName',
+            message: 'Please enter your name:',
+            default: 'someuser'
+        },
+        {
+            type: 'input',
+            name: 'authorEmail',
+            message: 'Please enter your email:',
+            default: 'someuser@mail.com',
+            validate: function (email) {
+                return /\S+@\S+/.test(email);
+            }
         },
         {
             type: 'input',
             name: 'applicationMain',
-            default: 'app.js',
-            message: 'Enter application main filename:'
+            message: 'Please enter application main filename:',
+            default: 'app.js'
         },
         {
             type: 'input',
             name: 'configurationFile',
+            message: 'Please enter application main configuration (json) filename:',
             default: 'config.json',
-            message: 'Enter application main configuration (json) filename:',
             validate: function (filename) {
                 return /.*\.json$/.test(filename);
             }
@@ -45,7 +61,7 @@ module.exports = yeoman.generators.Base.extend({
         {
             type: 'list',
             name: 'applicationLicense',
-            message: 'Choose a software license to use:',
+            message: 'Please choose a software license for your new project:',
             choices: [ 'MIT', 'BSD', 'Apache', 'Don\'t care']
         },
         {
@@ -57,13 +73,13 @@ module.exports = yeoman.generators.Base.extend({
         {
             type: 'confirm',
             name: 'useDb',
-            message: 'Would you like to use a db?',
+            message: 'Would you be using a database?',
             default: true
         },
         {
             type: 'list',
             name: 'whichDb',
-            message: 'Which one?',
+            message: 'Which kind of database?',
             choices: [ 'mongodb', 'sql' ],
             when: function (answers) {
                 return answers.useDb;
@@ -90,20 +106,21 @@ module.exports = yeoman.generators.Base.extend({
         {
             type: 'checkbox',
             name: 'libsMisc',
-            message: 'Which other libs you\d like to include?',
+            message: 'Which other libs you\'d like to include?',
             choices: [ 'commander', 'lodash', 'q', 'request', 'underscore' ]
         }
         ];
         this.prompt(prompts, function (props) {
             // @todo add editorcofig support or set a default
-            // @todo get author data
-            this.applicationName = props.applicationName;
-            this.applicationDescription = props.applicationDescription;
-            if (props.applicationLicense && (props.applicationLicense !== 'Don\t care')) {
+            this.applicationName = _.trim(props.applicationName);
+            this.applicationDescription = _.trim(props.applicationDescription);
+            this.authorName = _.trim(props.authorName);
+            this.authorEmail = props.authorEmail;
+            if (props.applicationLicense && (props.applicationLicense !== 'Don\'t care')) {
                 this.applicationLicense = props.applicationLicense;
             }
-            this.applicationMain = props.applicationMain;
-            this.configurationFile = props.configurationFile;
+            this.applicationMain = _.trim(props.applicationMain);
+            this.configurationFile = _.trim(props.configurationFile);
             // handling dependencies:
             this.libexpress = props.libexpress;
             this.useDb = props.useDb;
@@ -137,6 +154,36 @@ module.exports = yeoman.generators.Base.extend({
             // finally:
             done();
         }.bind(this));
+    },
+
+    _buildDependenciesArray: function (props) {
+        var applicationDeps = [];
+        if (this.libexpress) {
+            applicationDeps.push('express');
+        }
+        if (this.useDb) {
+            if (this.libsql) {
+                applicationDeps.push(this.libsql);
+            }else if (this.libmongo) {
+                applicationDeps.push(this.libmongo);
+            }
+        }
+        if (props.libsMisc && props.libsMisc.indexOf('commander') !== -1) {
+            applicationDeps.push('commander');
+        }
+        if (props.libsMisc && props.libsMisc.indexOf('request') !== -1) {
+            applicationDeps.push('request');
+        }
+        if (props.libsMisc && props.libsMisc.indexOf('underscore') !== -1) {
+            applicationDeps.push('underscore');
+        }
+        if (props.libsMisc && props.libsMisc.indexOf('lodash') !== -1) {
+            applicationDeps.push('lodash');
+        }
+        if (props.libsMisc && props.libsMisc.indexOf('q') !== -1) {
+            applicationDeps.push('q');
+        }
+        return applicationDeps;
     },
 
     writing: {

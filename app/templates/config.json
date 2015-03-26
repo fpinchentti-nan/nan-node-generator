@@ -1,8 +1,6 @@
 {
-    <% if (libexpress) { %>
-    "express": {
+    <% if (libexpress) { %>"express": {
         "port": 3000
-    },
-    <% } %>
-    "<%= whichDb %>":{}
+    },<% } %>
+    <% if (useDb) { %>"<%= whichDb %>":{}<% } %>
 }

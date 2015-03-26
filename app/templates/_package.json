@@ -5,9 +5,8 @@
     <% if (applicationLicense) { %>"license": "<%= applicationLicense %>",<% } %>
     "main": "<%= applicationMain %>",
     "author": {
-        "name": "",
-        "email": "",
-        "url": ""
+        "name": "<%= authorName %>",
+        "email": "<%= authorEmail %>"
     },
     "dependencies": {
         <%= _.map(applicationDeps, function(dep) { return '"' + dep + '":"latest"' }).join(',\n\t') %>
