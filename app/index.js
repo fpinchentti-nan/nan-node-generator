@@ -95,8 +95,8 @@ module.exports = yeoman.generators.Base.extend({
         }
         ];
         this.prompt(prompts, function (props) {
-            // @todo get author data from github
-            // @see https://github.com/yeoman/generator-generator/blob/master/app/index.js
+            // @todo add editorcofig support or set a default
+            // @todo get author data
             this.applicationName = props.applicationName;
             this.applicationDescription = props.applicationDescription;
             if (props.applicationLicense && (props.applicationLicense !== 'Don\t care')) {
